@@ -1,56 +1,107 @@
 package productivity.yaw.asare.tallyd_android;
 
 import android.app.Dialog;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     EditText mCreateHabitEditText;
-
+    CardView mHabitCard;
+    FloatingActionButton fab;
+    ImageView mConfirmHabit;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mHabitCard = (CardView)findViewById(R.id.new_habit_card);
         mCreateHabitEditText = (EditText)findViewById(R.id.new_habit_edit);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        mCreateHabitEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View view) {
-                if(mCreateHabitEditText.getVisibility() == View.VISIBLE){
-                    mCreateHabitEditText.setVisibility(View.GONE);
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus){
+                    mHabitCard.setVisibility(View.GONE);
+                    InputMethodManager imm = (InputMethodManager)getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mCreateHabitEditText.getWindowToken(), 0);
+                    fab.setImageResource(R.drawable.plus);
                 }
                 else{
-                    mCreateHabitEditText.setVisibility(View.VISIBLE);
-                    mCreateHabitEditText.requestFocus();
-                    MainActivity.this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
                     InputMethodManager inputMethodManager=(InputMethodManager)getSystemService(MainActivity.INPUT_METHOD_SERVICE);
                     inputMethodManager.toggleSoftInputFromWindow(mCreateHabitEditText.getApplicationWindowToken(), InputMethodManager.SHOW_FORCED, 0);
-
-                    mCreateHabitEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                        @Override
-                        public void onFocusChange(View v, boolean hasFocus) {
-                            if(!hasFocus){
-                                mCreateHabitEditText.setVisibility(View.GONE);
-                            }
-                        }
-                    });
-
+                    fab.setImageResource(R.drawable.close);
                 }
             }
         });
+
+        mConfirmHabit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(!mCreateHabitEditText.getText().toString().isEmpty()){
+                    
+                }
+            }
+        });
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mHabitCard.getVisibility() == View.VISIBLE){
+                    mHabitCard.setVisibility(View.GONE);
+                    InputMethodManager imm = (InputMethodManager)getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(mCreateHabitEditText.getWindowToken(), 0);
+                    fab.setImageResource(R.drawable.plus);
+                }
+                else{
+                    mHabitCard.setVisibility(View.VISIBLE);
+                    mCreateHabitEditText.requestFocus();
+                    fab.setImageResource(R.drawable.close);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onBackPressed(){
+        // do something here and don't write super.onBackPressed()
+        if(mCreateHabitEditText.hasFocus()){
+            mHabitCard.setVisibility(View.GONE);
+            InputMethodManager imm = (InputMethodManager)getSystemService(MainActivity.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(mCreateHabitEditText.getWindowToken(), 0);
+            fab.setImageResource(R.drawable.plus);
+        }
+        else
+            finish();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+
+        // Checks whether a hardware keyboard is available
+        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
+
+        } else if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) {
+            mCreateHabitEditText.setVisibility(View.GONE);
+        }
     }
 
     @Override
