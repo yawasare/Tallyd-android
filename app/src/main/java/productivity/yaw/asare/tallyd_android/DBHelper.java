@@ -2,16 +2,13 @@ package productivity.yaw.asare.tallyd_android;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.provider.BaseColumns;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.TimeZone;
 
@@ -31,26 +28,40 @@ public class DBHelper extends SQLiteOpenHelper {
         public static final String COLUMN_NAME_CREATED_AT = "created_at";
     }
 
+
+    public static abstract class TallyEntry implements BaseColumns {
+        public static final String TABLE_NAME = "Tally";
+        public static final String COLUMN_NAME_CREATED_AT = "created_at";
+        public static final String COLUMN_NAME_HABIT_ID = "habitid";
+    }
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    private static final String SQL_CREATE_ENTRIES =
+    private static final String SQL_CREATE_HABIT_ENTRIES =
             "CREATE TABLE IF NOT EXISTS " + HabitEntry.TABLE_NAME + " (" + HabitEntry._ID +
             " INTEGER PRIMARY KEY," + HabitEntry.COLUMN_NAME_NAME + TEXT_TYPE + COMMA_SEP +
-                    HabitEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP + " );";
+                    HabitEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE  + " );";
 
-    private static final String SQL_DELETE_ENTRIES =
+    private static final String SQL_DELETE_HABIT_ENTRIES =
             "DROP TABLE IF EXISTS " + HabitEntry.TABLE_NAME;
+
+    private static final String SQL_CREATE_TALLY_ENTRIES =
+            "CREATE TABLE IF NOT EXIST " + TallyEntry.TABLE_NAME + " C" + TallyEntry._ID +
+            " INTEGER PRIMARY KEY," + TallyEntry.COLUMN_NAME_CREATED_AT + TEXT_TYPE + COMMA_SEP+
+            TallyEntry.COLUMN_NAME_HABIT_ID + INTEGER_TYPE +  " );";
+
+    private static final String SQL_DELETE_TALLY_ENTRIES =
+            "DROP TABLE IF EXISTS " + TallyEntry.TABLE_NAME;
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES);
+        db.execSQL(SQL_CREATE_HABIT_ENTRIES);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_HABIT_ENTRIES);
         onCreate(db);
     }
 
@@ -80,5 +91,13 @@ public class DBHelper extends SQLiteOpenHelper {
          db.delete(HabitEntry.TABLE_NAME,
                  HabitEntry._ID + " = ? ",
                 new String[] { "" + habit.getId()});
+    }
+
+    public void addTally(Tally tally){
+
+    }
+
+    public ArrayList<Tally> getTallies(Habit habit){
+        return null;
     }
 }

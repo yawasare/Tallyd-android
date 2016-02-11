@@ -24,6 +24,8 @@ public class MainActivity extends AppCompatActivity {
     CardView mHabitCard;
     FloatingActionButton fab;
     ImageView mConfirmHabit;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

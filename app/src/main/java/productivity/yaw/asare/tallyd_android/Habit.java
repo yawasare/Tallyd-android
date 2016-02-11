@@ -1,14 +1,18 @@
 package productivity.yaw.asare.tallyd_android;
 
+import com.bignerdranch.expandablerecyclerview.Model.ParentListItem;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yaw on 1/22/16.
  */
-public class Habit {
+public class Habit implements ParentListItem {
     private ArrayList<Tally> mTallies;
     private String mName;
     private int mId;
+
 
     public String getName() {
         return mName;
@@ -32,5 +36,15 @@ public class Habit {
 
     public void setTallies(ArrayList<Tally> mTallies) {
         this.mTallies = mTallies;
+    }
+
+    @Override
+    public List<?> getChildItemList() {
+        return null;
+    }
+
+    @Override
+    public boolean isInitiallyExpanded() {
+        return false;
     }
 }
